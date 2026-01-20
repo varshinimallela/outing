@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friends Outing Invitation</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      box-sizing: border-box;
+      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive, sans-serif;
+      background: linear-gradient(135deg, #FFE5EC 0%, #E5D4FF 50%, #C7F0DB 100%);
+      height: 100%;
+      overflow: hidden;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    .wrapper {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      pointer-events: none;
+    }
+
+    .page.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: all;
+    }
+
+    .page.prev {
+      transform: translateX(-100%);
+    }
+
+    .container {
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 30px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      animation: scaleIn 0.5s ease-out;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .hero-page {
+      background: linear-gradient(135deg, #FFB3D9 0%, #C9A9E9 100%);
+      border-radius: 30px;
+      padding: 60px 30px;
+    }
+
+    .hero-title {
+      font-size: 36px;
+      font-weight: bold;
+      color: #FFFFFF;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+      margin-bottom: 15px;
+      line-height: 1.3;
+      animation: bounceIn 0.8s ease-out;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .hero-subtitle {
+      font-size: 20px;
+      color: #FFFFFF;
+      opacity: 0.95;
+      margin-bottom: 40px;
+    }
+
+    .start-btn {
+      background: #FFFFFF;
+      color: #B583D6;
+      border: none;
+      padding: 18px 45px;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .start-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #B583D6;
+      margin-bottom: 30px;
+    }
+
+    .friends-grid {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .friend-item {
+      text-align: center;
+      animation: popIn 0.5s ease-out forwards;
+      opacity: 0;
+    }
+
+    .friend-item:nth-child(1) { animation-delay: 0.1s; }
+    .friend-item:nth-child(2) { animation-delay: 0.3s; }
+    .friend-item:nth-child(3) { animation-delay: 0.5s; }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: scale(0) rotate(-180deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    .friend-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      border: 5px solid #FFB3D9;
+      box-shadow: 0 5px 20px rgba(181, 131, 214, 0.4);
+      overflow: hidden;
+      background: linear-gradient(135deg, #FFD4E5 0%, #D4C5F9 100%);
+      transition: transform 0.3s ease;
+    }
+
+    .friend-avatar:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .friend-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .friend-name {
+      font-size: 18px;
+      color: #7B68A6;
+      font-weight: bold;
+    }
+
+    .question {
+      font-size: 22px;
+      color: #B583D6;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+
+    .choice-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 40px;
+    }
+
+    .choice-btn {
+      background: linear-gradient(135deg, #FFE5F1 0%, #E8DEFF 100%);
+      border: 3px solid transparent;
+      border-radius: 20px;
+      padding: 20px;
+      font-size: 17px;
+      color: #7B68A6;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .choice-btn:hover {
+      transform: scale(1.05);
+      border-color: #FFB3D9;
+      background: linear-gradient(135deg, #FFD4E5 0%, #D4C5F9 100%);
+    }
+
+    .choice-btn.selected {
+      background: linear-gradient(135deg, #FFB3D9 0%, #C9A9E9 100%);
+      border-color: #FF8DC7;
+      color: #FFFFFF;
+      transform: scale(1.05);
+      box-shadow: 0 5px 20px rgba(255, 179, 217, 0.5);
+    }
+
+    .outfit-input {
+      width: 100%;
+      padding: 20px;
+      border: 3px solid #E8DEFF;
+      border-radius: 20px;
+      font-size: 17px;
+      color: #7B68A6;
+      font-family: inherit;
+      background: #FFFFFF;
+      transition: all 0.3s ease;
+      outline: none;
+      margin-bottom: 15px;
+    }
+
+    .outfit-input:focus {
+      border-color: #FFB3D9;
+      box-shadow: 0 0 0 4px rgba(255, 179, 217, 0.2);
+      transform: scale(1.02);
+    }
+
+    .outfit-input::placeholder {
+      color: #C5B8D9;
+    }
+
+    .outfit-note {
+      font-size: 15px;
+      color: #B583D6;
+      font-style: italic;
+      margin-bottom: 35px;
+    }
+
+    .next-btn, .back-btn {
+      background: linear-gradient(135deg, #FFB3D9 0%, #C9A9E9 100%);
+      color: #FFFFFF;
+      border: none;
+      padding: 16px 40px;
+      border-radius: 50px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      box-shadow: 0 5px 15px rgba(181, 131, 214, 0.3);
+      margin: 0 8px;
+    }
+
+    .next-btn:hover, .back-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(181, 131, 214, 0.4);
+    }
+
+    .back-btn {
+      background: linear-gradient(135deg, #E8DEFF 0%, #FFE5F1 100%);
+      color: #7B68A6;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .sparkles {
+      font-size: 40px;
+      margin: 20px 0;
+      animation: sparkle 2s infinite;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.3); }
+    }
+
+    .final-message {
+      font-size: 24px;
+      color: #7B68A6;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .closing-line {
+      font-size: 20px;
+      color: #9B8AC4;
+      margin-bottom: 20px;
+    }
+
+    .page-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .page-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .page-dot.active {
+      background: #FFFFFF;
+      transform: scale(1.3);
+    }
+
+    /* Floating Sparkles Animation */
+    .floating-sparkles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      overflow: hidden;
+    }
+
+    .sparkle {
+      position: absolute;
+      font-size: 20px;
+      animation: floatSparkle 4s infinite ease-in-out;
+      opacity: 0;
+    }
+
+    @keyframes floatSparkle {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(0deg) scale(0);
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) rotate(360deg) scale(1);
+      }
+    }
+
+    .sparkle:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .sparkle:nth-child(2) { left: 20%; animation-delay: 0.5s; font-size: 16px; }
+    .sparkle:nth-child(3) { left: 30%; animation-delay: 1s; }
+    .sparkle:nth-child(4) { left: 40%; animation-delay: 1.5s; font-size: 24px; }
+    .sparkle:nth-child(5) { left: 50%; animation-delay: 2s; }
+    .sparkle:nth-child(6) { left: 60%; animation-delay: 2.5s; font-size: 18px; }
+    .sparkle:nth-child(7) { left: 70%; animation-delay: 3s; }
+    .sparkle:nth-child(8) { left: 80%; animation-delay: 3.5s; font-size: 22px; }
+    .sparkle:nth-child(9) { left: 90%; animation-delay: 1.2s; }
+    .sparkle:nth-child(10) { left: 15%; animation-delay: 2.8s; font-size: 17px; }
+    .sparkle:nth-child(11) { left: 25%; animation-delay: 0.8s; }
+    .sparkle:nth-child(12) { left: 35%; animation-delay: 3.2s; font-size: 19px; }
+    .sparkle:nth-child(13) { left: 45%; animation-delay: 1.7s; }
+    .sparkle:nth-child(14) { left: 55%; animation-delay: 2.3s; font-size: 21px; }
+    .sparkle:nth-child(15) { left: 65%; animation-delay: 0.3s; }
+    .sparkle:nth-child(16) { left: 75%; animation-delay: 2.9s; font-size: 16px; }
+    .sparkle:nth-child(17) { left: 85%; animation-delay: 1.4s; }
+    .sparkle:nth-child(18) { left: 95%; animation-delay: 3.4s; font-size: 23px; }
+    .sparkle:nth-child(19) { left: 5%; animation-delay: 0.9s; }
+    .sparkle:nth-child(20) { left: 50%; animation-delay: 3.8s; font-size: 18px; }
+
+    /* Confetti animation for hero page */
+    .confetti-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #FFB3D9;
+      top: -10px;
+      animation: confettiFall 3s linear infinite;
+    }
+
+    @keyframes confettiFall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .confetti:nth-child(odd) { background: #C9A9E9; }
+    .confetti:nth-child(3n) { background: #C7F0DB; }
+    .confetti:nth-child(4n) { background: #FFE5EC; }
+
+    /* Glitter effect on cards */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: glitterMove 20s linear infinite;
+      pointer-events: none;
+      opacity: 0.3;
+      border-radius: 30px;
+    }
+
+    @keyframes glitterMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 50px 50px; }
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Pulse glow effect */
+    .hero-page::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+      animation: pulseGlow 3s ease-in-out infinite;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    .hero-page {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Star twinkle effect */
+    .star-twinkle {
+      position: absolute;
+      color: #FFFFFF;
+      font-size: 16px;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title {
+        font-size: 28px;
+      }
+
+      .hero-subtitle {
+        font-size: 18px;
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+
+      .friend-avatar {
+        width: 85px;
+        height: 85px;
+      }
+
+      .choice-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="wrapper"><!-- Floating Sparkles Background -->
+   <div class="floating-sparkles">
+    <div class="sparkle">
+     ✨
+    </div>
+    <div class="sparkle">
+     💫
+    </div>
+    <div class="sparkle">
+     ⭐
+    </div>
+    <div class="sparkle">
+     ✨
+    </div>
+    <div class="sparkle">
+     💖
+    </div>
+    <div class="sparkle">
+     ✨
+    </div>
+    <div class="sparkle">
+     💫
+    </div>
+    <div class="sparkle">
+     ⭐
+    </div>
+    <div class="sparkle">
+     💕
+    </div>
+    <div class="sparkle">
+     ✨
+    </div>
+    <div class="sparkle">
+     💫
+    </div>
+    <div class="sparkle">
+     ⭐
+    </div>
+    <div class="sparkle">
+     💖
+    </div>
+    <div class="sparkle">
+     ✨
+    </div>
+    <div class="sparkle">
+     💫
+    </div>
+    <div class="sparkle">
+     ⭐
+    </div>
+    <div class="sparkle">
+     💕
+    </div>
+    <div class="sparkle">
+     ✨
+    </div>
+    <div class="sparkle">
+     💫
+    </div>
+    <div class="sparkle">
+     ⭐
+    </div>
+   </div><!-- Page Indicator -->
+   <div class="page-indicator">
+    <div class="page-dot active" data-page="0"></div>
+    <div class="page-dot" data-page="1"></div>
+    <div class="page-dot" data-page="2"></div>
+    <div class="page-dot" data-page="3"></div>
+    <div class="page-dot" data-page="4"></div>
+    <div class="page-dot" data-page="5"></div>
+   </div><!-- Page 1: Hero -->
+   <div class="page active" data-page="0">
+    <div class="container">
+     <div class="card hero-page"><!-- Confetti Effect -->
+      <div class="confetti-container" id="confetti-container"></div><!-- Twinkling Stars -->
+      <div class="star-twinkle" style="top: 10%; left: 10%;">
+       ⭐
+      </div>
+      <div class="star-twinkle" style="top: 15%; right: 15%; animation-delay: 0.5s;">
+       ✨
+      </div>
+      <div class="star-twinkle" style="top: 80%; left: 20%; animation-delay: 1s;">
+       💫
+      </div>
+      <div class="star-twinkle" style="top: 75%; right: 10%; animation-delay: 1.5s;">
+       ⭐
+      </div>
+      <div class="star-twinkle" style="top: 50%; left: 5%; animation-delay: 0.8s;">
+       💖
+      </div>
+      <div class="star-twinkle" style="top: 45%; right: 5%; animation-delay: 1.2s;">
+       💕
+      </div>
+      <div class="hero-title" id="hero-title">
+       Hey Tomorrow We're Going Out!
+      </div>
+      <div class="hero-subtitle" id="hero-subtitle">
+       Choose the plan &amp; tell your outfit ✨
+      </div><button class="start-btn" onclick="nextPage()">Let's Go! 🎉</button>
+     </div>
+    </div>
+   </div><!-- Page 2: Friends -->
+   <div class="page" data-page="1">
+    <div class="container">
+     <div class="card">
+      <div class="section-title" id="friends-title">
+       Who's Coming 🥰
+      </div>
+      <div class="friends-grid">
+       <div class="friend-item">
+        <div class="friend-avatar"><img src="roshan.jpg" alt="Friend 1" onerror="this.src=''; this.alt='Add friend1.jpg image'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:40px;\'>🌸</div>';">
+        </div>
+        <div class="friend-name" id="friend-1-name">
+         Roshan
+        </div>
+       </div>
+       <div class="friend-item">
+        <div class="friend-avatar"><img src="kutty.jpg" alt="Friend 2" onerror="this.src=''; this.alt='Add friend2.jpg image'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:40px;\'>💙</div>';">
+        </div>
+        <div class="friend-name" id="friend-2-name">
+         Kutty
+        </div>
+       </div>
+       <div class="friend-item">
+        <div class="friend-avatar"><img src="abhi.jpg" alt="Friend 3" onerror="this.src=''; this.alt='Add friend3.jpg image'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:40px;\'>✨</div>';">
+        </div>
+        <div class="friend-name" id="friend-3-name">
+         Abhiram
+        </div>
+       </div>
+      </div>
+      <div class="button-group"><button class="back-btn" onclick="prevPage()">← Back</button> <button class="next-btn" onclick="nextPage()">Next →</button>
+      </div>
+     </div>
+    </div>
+   </div><!-- Page 3: Outing Choice -->
+   <div class="page" data-page="2">
+    <div class="container">
+     <div class="card">
+      <div class="question" id="outing-question">
+       Where should we go?
+      </div>
+      <div class="choice-buttons"><button class="choice-btn" onclick="selectChoice(this, 'Cycling')"> 🚲 Cycling </button> <button class="choice-btn" onclick="selectChoice(this, 'Lunch')"> 🍽️ Lunch </button> <button class="choice-btn" onclick="selectChoice(this, 'Cafe')"> ☕ Cafe </button> <button class="choice-btn" onclick="selectChoice(this, 'Custom')"> 🎨 Custom Outing </button>
+      </div>
+      <div id="lunch-places-container" style="display: none; margin-top: 20px;">
+       <div style="font-size: 18px; color: #B583D6; font-weight: bold; margin-bottom: 15px;">
+        Which restaurant? 🍽️
+       </div><input type="text" class="outfit-input" id="lunch-place-input" placeholder="Type the restaurant name...">
+      </div>
+      <div id="cafe-places-container" style="display: none; margin-top: 20px;">
+       <div style="font-size: 18px; color: #B583D6; font-weight: bold; margin-bottom: 15px;">
+        Which cafe? ☕
+       </div><input type="text" class="outfit-input" id="cafe-place-input" placeholder="Type the cafe name...">
+      </div>
+      <div id="custom-outing-container" style="display: none; margin-top: 20px;"><input type="text" class="outfit-input" id="custom-outing-input" placeholder="Tell us what you want to do...">
+      </div>
+      <div class="button-group"><button class="back-btn" onclick="prevPage()">← Back</button> <button class="next-btn" onclick="nextPage()">Next →</button>
+      </div>
+     </div>
+    </div>
+   </div><!-- Page 4: Outfit -->
+   <div class="page" data-page="3">
+    <div class="container">
+     <div class="card">
+      <div class="question" id="outfit-question">
+       What outfit are you planning? 👀✨
+      </div><input type="text" class="outfit-input" id="outfit-input" placeholder="Type your outfit here…">
+      <div class="outfit-note" id="outfit-note">
+       Wear whatever makes you feel cute 💖
+      </div>
+      <div class="button-group"><button class="back-btn" onclick="prevPage()">← Back</button> <button class="next-btn" onclick="nextPage()">Next →</button>
+      </div>
+     </div>
+    </div>
+   </div><!-- Page 5: Summary -->
+   <div class="page" data-page="4">
+    <div class="container">
+     <div class="card" style="background-image: url('group.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(255, 255, 255, 0.92);">
+      <div class="section-title" style="color: #FF8DC7;">
+       📋 Your Outing Plan
+      </div>
+      <div id="summary-content" style="text-align: left; padding: 20px; background: rgba(255, 255, 255, 0.95); border-radius: 20px; margin-bottom: 30px; backdrop-filter: blur(10px);">
+       <div style="font-size: 18px; color: #7B68A6; line-height: 2; font-weight: 500;">
+        <div style="margin-bottom: 15px;"><span style="font-size: 20px;">👥</span> <strong>Squad:</strong>
+         <div id="summary-friends" style="margin-left: 35px; margin-top: 8px;"></div>
+        </div>
+        <div style="margin-bottom: 15px;"><span style="font-size: 20px;">📍</span> <strong>Plan:</strong>
+         <div id="summary-plan" style="margin-left: 35px; margin-top: 8px;"></div>
+        </div>
+        <div><span style="font-size: 20px;">👗</span> <strong>Outfit:</strong>
+         <div id="summary-outfit" style="margin-left: 35px; margin-top: 8px;"></div>
+        </div>
+       </div>
+      </div>
+      <div class="sparkles">
+       ✨💕✨
+      </div>
+      <div class="final-message" id="final-message">
+       Screenshot &amp; send it 💕
+      </div>
+      <div class="closing-line" id="closing-line">
+       See you tomorrow 😌✨
+      </div>
+      <div class="sparkles">
+       💖✨💖
+      </div>
+      <div class="button-group" style="margin-top: 30px;"><button class="back-btn" onclick="prevPage()">← Back</button> <button class="start-btn" onclick="goToPage(0)">Start Over 🔄</button>
+      </div>
+     </div>
+    </div>
+   </div><!-- Page 6: Final Confirmation -->
+   <div class="page" data-page="5">
+    <div class="container">
+     <div class="card">
+      <div class="sparkles">
+       ✨💕✨
+      </div>
+      <div class="final-message">
+       All Set! 🎉
+      </div>
+      <div class="closing-line">
+       Can't wait to see you! 😌✨
+      </div>
+      <div class="sparkles">
+       💖✨💖
+      </div>
+      <div class="button-group" style="margin-top: 30px;"><button class="back-btn" onclick="prevPage()">← Back</button> <button class="start-btn" onclick="goToPage(0)">Start Over 🔄</button>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      hero_title: "Hey Tomorrow We're Going Out!",
+      hero_subtitle: "Choose the plan & tell your outfit ✨",
+      friends_title: "Who's Coming 🥰",
+      friend_1_name: "Roshan",
+      friend_2_name: "Kutty",
+      friend_3_name: "Abhiram",
+      outing_question: "Where should we go?",
+      outfit_question: "What outfit are you planning? 👀✨",
+      outfit_placeholder: "Type your outfit here…",
+      outfit_note: "Wear whatever makes you feel cute 💖",
+      final_message: "Submitted? Screenshot & send it 💕",
+      closing_line: "See you tomorrow 😌✨"
+    };
+
+    let currentPage = 0;
+    const totalPages = 6;
+    let userChoices = {
+      outing: '',
+      customOuting: '',
+      lunchPlace: '',
+      cafePlace: '',
+      outfit: ''
+    };
+
+    // Generate confetti
+    function createConfetti() {
+      const container = document.getElementById('confetti-container');
+      if (!container) return;
+      
+      for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        container.appendChild(confetti);
+      }
+    }
+
+    // Initialize confetti on load
+    createConfetti();
+
+    // Update summary page
+    function updateSummary() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      // Friends list
+      const friendsList = `• ${config.friend_1_name || defaultConfig.friend_1_name}<br>• ${config.friend_2_name || defaultConfig.friend_2_name}<br>• ${config.friend_3_name || defaultConfig.friend_3_name}`;
+      document.getElementById('summary-friends').innerHTML = friendsList;
+      
+      // Plan
+      let planText = userChoices.outing || 'Not selected yet';
+      if (userChoices.outing === 'Custom' && userChoices.customOuting) {
+        planText = userChoices.customOuting;
+      } else if (userChoices.outing === 'Lunch' && userChoices.lunchPlace) {
+        planText = `Lunch at ${userChoices.lunchPlace}`;
+      } else if (userChoices.outing === 'Cafe' && userChoices.cafePlace) {
+        planText = `Cafe at ${userChoices.cafePlace}`;
+      }
+      document.getElementById('summary-plan').innerHTML = `• ${planText}`;
+      
+      // Outfit
+      const outfitText = userChoices.outfit || 'Not decided yet';
+      document.getElementById('summary-outfit').innerHTML = `• ${outfitText}`;
+    }
+
+    function goToPage(pageNum) {
+      if (pageNum < 0 || pageNum >= totalPages) return;
+      
+      // Update summary before showing summary page
+      if (pageNum === 4) {
+        updateSummary();
+      }
+      
+      const pages = document.querySelectorAll('.page');
+      const dots = document.querySelectorAll('.page-dot');
+      
+      // Update current page
+      pages[currentPage].classList.remove('active');
+      pages[currentPage].classList.add('prev');
+      
+      // Update new page
+      pages[pageNum].classList.remove('prev');
+      pages[pageNum].classList.add('active');
+      
+      // Update dots
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === pageNum);
+      });
+      
+      currentPage = pageNum;
+      
+      // Reset animations
+      setTimeout(() => {
+        pages.forEach(page => {
+          if (!page.classList.contains('active')) {
+            page.classList.remove('prev');
+          }
+        });
+      }, 500);
+    }
+
+    function nextPage() {
+      if (currentPage < totalPages - 1) {
+        goToPage(currentPage + 1);
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 0) {
+        goToPage(currentPage - 1);
+      }
+    }
+
+    function selectChoice(button, choiceType) {
+      const buttons = button.parentElement.querySelectorAll('.choice-btn');
+      buttons.forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+      
+      // Store the choice
+      userChoices.outing = choiceType;
+      
+      // Show/hide appropriate input containers
+      const customContainer = document.getElementById('custom-outing-container');
+      const lunchContainer = document.getElementById('lunch-places-container');
+      const cafeContainer = document.getElementById('cafe-places-container');
+      
+      if (choiceType === 'Custom') {
+        customContainer.style.display = 'block';
+        lunchContainer.style.display = 'none';
+        cafeContainer.style.display = 'none';
+        userChoices.lunchPlace = '';
+        userChoices.cafePlace = '';
+      } else if (choiceType === 'Lunch') {
+        lunchContainer.style.display = 'block';
+        customContainer.style.display = 'none';
+        cafeContainer.style.display = 'none';
+        userChoices.customOuting = '';
+        userChoices.cafePlace = '';
+      } else if (choiceType === 'Cafe') {
+        cafeContainer.style.display = 'block';
+        customContainer.style.display = 'none';
+        lunchContainer.style.display = 'none';
+        userChoices.customOuting = '';
+        userChoices.lunchPlace = '';
+      } else {
+        customContainer.style.display = 'none';
+        lunchContainer.style.display = 'none';
+        cafeContainer.style.display = 'none';
+        userChoices.customOuting = '';
+        userChoices.lunchPlace = '';
+        userChoices.cafePlace = '';
+      }
+    }
+
+    // Track custom outing input
+    document.addEventListener('DOMContentLoaded', () => {
+      const customInput = document.getElementById('custom-outing-input');
+      if (customInput) {
+        customInput.addEventListener('input', (e) => {
+          userChoices.customOuting = e.target.value;
+        });
+      }
+      
+      // Track lunch place input
+      const lunchInput = document.getElementById('lunch-place-input');
+      if (lunchInput) {
+        lunchInput.addEventListener('input', (e) => {
+          userChoices.lunchPlace = e.target.value;
+        });
+      }
+      
+      // Track cafe place input
+      const cafeInput = document.getElementById('cafe-place-input');
+      if (cafeInput) {
+        cafeInput.addEventListener('input', (e) => {
+          userChoices.cafePlace = e.target.value;
+        });
+      }
+      
+      // Track outfit input
+      const outfitInput = document.getElementById('outfit-input');
+      if (outfitInput) {
+        outfitInput.addEventListener('input', (e) => {
+          userChoices.outfit = e.target.value;
+        });
+      }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Enter') {
+        nextPage();
+      } else if (e.key === 'ArrowLeft') {
+        prevPage();
+      }
+    });
+
+    // Element SDK implementation
+    async function onConfigChange(config) {
+      document.getElementById('hero-title').textContent = config.hero_title || defaultConfig.hero_title;
+      document.getElementById('hero-subtitle').textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
+      document.getElementById('friends-title').textContent = config.friends_title || defaultConfig.friends_title;
+      document.getElementById('friend-1-name').textContent = config.friend_1_name || defaultConfig.friend_1_name;
+      document.getElementById('friend-2-name').textContent = config.friend_2_name || defaultConfig.friend_2_name;
+      document.getElementById('friend-3-name').textContent = config.friend_3_name || defaultConfig.friend_3_name;
+      document.getElementById('outing-question').textContent = config.outing_question || defaultConfig.outing_question;
+      document.getElementById('outfit-question').textContent = config.outfit_question || defaultConfig.outfit_question;
+      document.getElementById('outfit-input').placeholder = config.outfit_placeholder || defaultConfig.outfit_placeholder;
+      document.getElementById('outfit-note').textContent = config.outfit_note || defaultConfig.outfit_note;
+      document.getElementById('final-message').textContent = config.final_message || defaultConfig.final_message;
+      document.getElementById('closing-line').textContent = config.closing_line || defaultConfig.closing_line;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["hero_title", config.hero_title || defaultConfig.hero_title],
+        ["hero_subtitle", config.hero_subtitle || defaultConfig.hero_subtitle],
+        ["friends_title", config.friends_title || defaultConfig.friends_title],
+        ["friend_1_name", config.friend_1_name || defaultConfig.friend_1_name],
+        ["friend_2_name", config.friend_2_name || defaultConfig.friend_2_name],
+        ["friend_3_name", config.friend_3_name || defaultConfig.friend_3_name],
+        ["outing_question", config.outing_question || defaultConfig.outing_question],
+        ["outfit_question", config.outfit_question || defaultConfig.outfit_question],
+        ["outfit_placeholder", config.outfit_placeholder || defaultConfig.outfit_placeholder],
+        ["outfit_note", config.outfit_note || defaultConfig.outfit_note],
+        ["final_message", config.final_message || defaultConfig.final_message],
+        ["closing_line", config.closing_line || defaultConfig.closing_line]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b2e8fbc54d62e84',t:'MTc2NjU2MzE4OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
